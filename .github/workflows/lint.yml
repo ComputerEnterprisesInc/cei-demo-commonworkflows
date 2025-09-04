@@ -1,0 +1,31 @@
+# This workflow is reusable and can be called from other repositories for linting purposes.
+# It is generic and works with any linter by passing the linter command as an input.
+
+name: Reusable Lint Workflow
+
+on:
+  workflow_call:
+    inputs:
+      linter-command:
+        description: 'The linter command to run (e.g., "npm run lint", "flake8 .", etc.)'
+        required: true
+        type: string
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Set up Node.js (optional, remove if not needed)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+        continue-on-error: true
+      - name: Set up Python (optional, remove if not needed)
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+        continue-on-error: true
+      - name: Run linter
+        run: ${{ inputs.linter-command }}
