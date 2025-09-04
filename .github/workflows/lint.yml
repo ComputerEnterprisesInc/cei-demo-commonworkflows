@@ -1,3 +1,4 @@
+
 # This workflow is reusable and can be called from other repositories for linting purposes.
 # It is generic and works with any linter by passing the linter command as an input.
 
@@ -10,8 +11,11 @@ on:
         description: 'The linter command to run (e.g., "npm run lint", "flake8 .", etc.)'
         required: true
         type: string
+  merge_queue: []
+  pull_request_target: []
+  pull_request: []
 
-jobs:
+
   lint:
     runs-on: ubuntu-latest
     steps:
@@ -29,3 +33,4 @@ jobs:
         continue-on-error: true
       - name: Run linter
         run: ${{ inputs.linter-command }}
+      - name: Run linter
