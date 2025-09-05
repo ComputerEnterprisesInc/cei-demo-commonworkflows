@@ -15,7 +15,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const team = 'MitchTeam';
+            const team = 'mitchteam';
             const org = context.repo.owner;
             await github.rest.pulls.requestReviewers({
               owner: org,
