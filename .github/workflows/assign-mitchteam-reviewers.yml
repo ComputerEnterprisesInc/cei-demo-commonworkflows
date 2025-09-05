@@ -13,7 +13,7 @@ jobs:
       - name: Assign MitchTeam as reviewers (any branch -> main)
         uses: actions/github-script@v7
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.PERSONAL_TOKEN }}
           script: |
             // Use the team slug (all lowercase, no spaces), not the display name
             const teamSlug = 'mitchteam'; // <-- update this if your team slug is different
