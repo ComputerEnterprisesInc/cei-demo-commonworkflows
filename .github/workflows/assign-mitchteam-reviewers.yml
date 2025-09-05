@@ -10,26 +10,46 @@ jobs:
   assign-reviewers:
     runs-on: ubuntu-latest
     steps:
-      - name: Assign MitchTeam as reviewers (any branch -> main)
+      - name: Assign MitchTeam as reviewers and @mention the team
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.PERSONAL_TOKEN }}
           script: |
-            // Use the team slug (all lowercase, no spaces), not the display name
-            const teamSlug = 'mitchteam'; // <-- update this if your team slug is different
+            const teamSlug = 'mitchteam'; // GitHub team slug (lowercase, no spaces)
             const org = context.repo.owner;
-            console.log('DEBUG: org =', org);
-            console.log('DEBUG: teamSlug =', teamSlug);
+            const repo = context.repo.repo;
+            const pull_number = context.payload.pull_request.number;
+            const prAuthor = context.payload.pull_request.user.login;
+
+            console.log('Assigning team reviewers...');
             try {
               const result = await github.rest.pulls.requestReviewers({
                 owner: org,
-                repo: context.repo.repo,
-                pull_number: context.payload.pull_request.number,
+                repo,
+                pull_number,
                 reviewers: [],
                 team_reviewers: [teamSlug]
               });
-              console.log('DEBUG: Reviewer assignment result:', result);
+              console.log('Reviewer assignment result:', result);
             } catch (error) {
-              console.error('DEBUG: Error assigning reviewers:', error);
+              console.error('Error assigning reviewers:', error);
+              throw error;
+            }
+
+            // Post a comment @mentioning the team
+            const teamMention = `@${org}/${teamSlug}`;
+            const body = `👋 ${teamMention}, please review this PR from @${prAuthor}.`;
+
+            console.log('Posting PR comment to @mention team...');
+            try {
+              await github.rest.issues.createComment({
+                owner: org,
+                repo,
+                issue_number: pull_number,
+                body
+              });
+              console.log('Comment posted successfully.');
+            } catch (error) {
+              console.error('Error posting comment:', error);
               throw error;
             }
