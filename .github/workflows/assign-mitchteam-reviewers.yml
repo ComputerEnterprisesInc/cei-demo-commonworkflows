@@ -10,8 +10,7 @@ jobs:
   assign-reviewers:
     runs-on: ubuntu-latest
     steps:
-      - name: Assign MitchTeam as reviewers (only for dev -> main)
-        if: github.head_ref == 'dev'
+      - name: Assign MitchTeam as reviewers (any branch -> main)
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -26,6 +25,3 @@ jobs:
               reviewers: [],
               team_reviewers: [teamSlug]
             });
-      - name: Mark workflow as successful for other PRs
-        if: github.head_ref != 'dev'
-        run: echo "No team assignment needed for this PR."
