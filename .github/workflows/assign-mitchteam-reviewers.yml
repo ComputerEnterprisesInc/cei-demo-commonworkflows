@@ -18,10 +18,18 @@ jobs:
             // Use the team slug (all lowercase, no spaces), not the display name
             const teamSlug = 'mitchteam'; // <-- update this if your team slug is different
             const org = context.repo.owner;
-            await github.rest.pulls.requestReviewers({
-              owner: org,
-              repo: context.repo.repo,
-              pull_number: context.payload.pull_request.number,
-              reviewers: [],
-              team_reviewers: [teamSlug]
-            });
+            console.log('DEBUG: org =', org);
+            console.log('DEBUG: teamSlug =', teamSlug);
+            try {
+              const result = await github.rest.pulls.requestReviewers({
+                owner: org,
+                repo: context.repo.repo,
+                pull_number: context.payload.pull_request.number,
+                reviewers: [],
+                team_reviewers: [teamSlug]
+              });
+              console.log('DEBUG: Reviewer assignment result:', result);
+            } catch (error) {
+              console.error('DEBUG: Error assigning reviewers:', error);
+              throw error;
+            }
